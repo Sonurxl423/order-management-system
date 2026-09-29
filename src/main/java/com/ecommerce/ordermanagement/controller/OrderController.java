@@ -3,6 +3,7 @@ package com.ecommerce.ordermanagement.controller;
 import com.ecommerce.ordermanagement.dto.OrderRequest;
 import com.ecommerce.ordermanagement.dto.OrderResponse;
 import com.ecommerce.ordermanagement.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public OrderResponse createOrder(@RequestBody OrderRequest request) {
+    public OrderResponse createOrder(@Valid @RequestBody OrderRequest request) {
         return orderService.createOrder(request);
     }
 
