@@ -1,6 +1,7 @@
 package com.ecommerce.ordermanagement.controller;
 
-import com.ecommerce.ordermanagement.entity.Order;
+import com.ecommerce.ordermanagement.dto.OrderRequest;
+import com.ecommerce.ordermanagement.dto.OrderResponse;
 import com.ecommerce.ordermanagement.service.OrderService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,17 +18,17 @@ public class OrderController {
     }
 
     @PostMapping
-    public Order createOrder(@RequestBody Order order) {
-        return orderService.createOrder(order);
+    public OrderResponse createOrder(@RequestBody OrderRequest request) {
+        return orderService.createOrder(request);
     }
 
     @GetMapping
-    public List<Order> getAllOrders() {
+    public List<OrderResponse> getAllOrders() {
         return orderService.getAllOrders();
     }
 
     @GetMapping("/{id}")
-    public Order getOrderById(@PathVariable Long id) {
+    public OrderResponse getOrderById(@PathVariable Long id) {
         return orderService.getOrderById(id);
     }
 }

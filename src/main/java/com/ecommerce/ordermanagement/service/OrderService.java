@@ -1,5 +1,7 @@
 package com.ecommerce.ordermanagement.service;
 
+import com.ecommerce.ordermanagement.dto.OrderRequest;
+import com.ecommerce.ordermanagement.dto.OrderResponse;
 import com.ecommerce.ordermanagement.entity.Order;
 import org.springframework.stereotype.Service;
 
@@ -13,24 +15,41 @@ public class OrderService {
 
     private Long nextId = 1L;
 
-    public Order createOrder(Order order) {
+    public OrderResponse createOrder(OrderRequest request) {
+
+        Order order = new Order();
 
         order.setId(nextId++);
+        order.setProductName(request.getProductName());
+        order.setQuantity(request.getQuantity());
 
         orders.add(order);
 
-        return order;
+        return mapToResponse(order);
     }
 
-    public List<Order> getAllOrders() {
-        return orders;
+    public List<OrderResponse> getAllOrders() {
+
+        return orders.stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
-    public Order getOrderById(Long id) {
+    public OrderResponse getOrderById(Long id) {
 
         return orders.stream()
                 .filter(order -> order.getId().equals(id))
+                .map(this::mapToResponse)
                 .findFirst()
                 .orElse(null);
+    }
+
+    private OrderResponse mapToResponse(Order order) {
+
+        return new OrderResponse(
+                order.getId(),
+                order.getProductName(),
+                order.getQuantity()
+        );
     }
 }
