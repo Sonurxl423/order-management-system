@@ -3,6 +3,7 @@ package com.ecommerce.ordermanagement.service;
 import com.ecommerce.ordermanagement.dto.OrderRequest;
 import com.ecommerce.ordermanagement.dto.OrderResponse;
 import com.ecommerce.ordermanagement.entity.Order;
+import com.ecommerce.ordermanagement.exception.OrderNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,7 +42,9 @@ public class OrderService {
                 .filter(order -> order.getId().equals(id))
                 .map(this::mapToResponse)
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() ->
+                        new OrderNotFoundException("Order not found with id: " + id)
+                );
     }
 
     private OrderResponse mapToResponse(Order order) {
@@ -51,5 +54,23 @@ public class OrderService {
                 order.getProductName(),
                 order.getQuantity()
         );
+    }
+
+    public OrderResponse deleteOrderById(Long id) {
+
+        Order order = orders.stream()
+                .filter(orderItem -> orderItem.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() ->
+                        new OrderNotFoundException(
+                                "Order not found with id: " + id
+                        )
+                );
+
+        OrderResponse response = mapToResponse(order);
+
+        orders.remove(order);
+
+        return response;
     }
 }

@@ -32,4 +32,9 @@ public class OrderController {
     public OrderResponse getOrderById(@PathVariable Long id) {
         return orderService.getOrderById(id);
     }
+
+    @DeleteMapping("/{id}")
+    public OrderResponse deleteOrderById(@PathVariable Long id){
+        return orderService.deleteOrderById(id);
+    }
 }
