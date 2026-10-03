@@ -11,6 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import com.ecommerce.ordermanagement.specification.OrderSpecification;
+
+import org.springframework.data.jpa.domain.Specification;
+
 
 @Service
 public class OrderService {
@@ -124,4 +128,63 @@ public class OrderService {
         return orderRepository.findAll(pageable)
                 .map(this::mapToResponse);
     }
+
+    @Transactional(readOnly = true)
+    public boolean orderExistsByProductName(String productName) {
+        return orderRepository.existsByProductName(productName);
+    }
+
+    @Transactional(readOnly = true)
+    public long countOrdersByProductName(String productName) {
+        return orderRepository.countByProductName(productName);
+    }
+
+    @Transactional
+    public long deleteOrdersByProductName(String productName) {
+        return orderRepository.deleteByProductName(productName);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponse> searchByProductName(String productName) {
+
+        return orderRepository
+                .findAll(OrderSpecification.hasProductName(productName))
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponse> searchOrders(
+            String productName,
+            Integer minQuantity,
+            Integer maxQuantity) {
+
+        Specification<Order> specification = Specification.allOf();
+
+        if (productName != null && !productName.isBlank()) {
+            specification = specification.and(
+                    OrderSpecification.hasProductName(productName)
+            );
+        }
+
+        if (minQuantity != null) {
+            specification = specification.and(
+                    OrderSpecification.hasMinimumQuantity(minQuantity)
+            );
+        }
+
+        if (maxQuantity != null) {
+            specification = specification.and(
+                    OrderSpecification.hasMaximumQuantity(maxQuantity)
+            );
+        }
+
+        return orderRepository.findAll(specification)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+
 }

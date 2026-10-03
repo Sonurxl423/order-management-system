@@ -66,4 +66,40 @@ public class OrderController {
     public Page<OrderResponse> getOrders(Pageable pageable) {
         return orderService.getOrders(pageable);
     }
+
+    @GetMapping("/exists")
+    public boolean orderExistsByProductName(@RequestParam String productName) {
+        return orderService.orderExistsByProductName(productName);
+    }
+
+    @GetMapping("/count")
+    public long countOrdersByProductName(@RequestParam String productName) {
+        return orderService.countOrdersByProductName(productName);
+    }
+
+    @DeleteMapping("/by-product")
+    public long deleteOrdersByProductName(@RequestParam String productName) {
+        return orderService.deleteOrdersByProductName(productName);
+    }
+
+    @GetMapping("/search/specification")
+    public List<OrderResponse> searchByProductName(
+            @RequestParam String productName) {
+
+        return orderService.searchByProductName(productName);
+    }
+
+    @GetMapping("/search/advanced")
+    public List<OrderResponse> searchOrders(
+            @RequestParam(required = false) String productName,
+            @RequestParam(required = false) Integer minQuantity,
+            @RequestParam(required = false) Integer maxQuantity) {
+
+        return orderService.searchOrders(
+                productName,
+                minQuantity,
+                maxQuantity
+        );
+    }
+
 }
